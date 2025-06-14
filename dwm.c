@@ -67,6 +67,8 @@ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms *
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
+unsigned char work = 0;
+
 typedef union {
 	int i;
 	unsigned int ui;
@@ -1321,7 +1323,7 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
 	wc.border_width = c->bw;
-	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
+	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next) && !work)
 	    || &monocle == c->mon->lt[c->mon->sellt]->arrange)
 	    && !c->isfullscreen && !c->isfloating
 	    && NULL != c->mon->lt[c->mon->sellt]->arrange) {
@@ -1757,12 +1759,12 @@ tagmon(const Arg *arg)
 	sendmon(selmon->sel, dirtomon(arg->i));
 }
 
-int work = 1;
 void
 toggleWorkMode(const Arg *arg)
 {
     if(work) work = 0;
 	else work = 1;
+
 
 	tile(selmon);
 }
@@ -1784,7 +1786,9 @@ tile(Monitor *m)
 	if (n == 0)
 		return;
 
-	if(work && workmodeRatio < m->ww)
+	if(workmodeRatio > m->ww) work = 0;
+
+	if(work)
 	{
 		if (n > m->nmaster)
 			mw = m->nmaster ? workmodeRatio * m->mfact: 0;
