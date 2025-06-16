@@ -67,7 +67,7 @@ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms *
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
-unsigned char work = 0;
+//unsigned char work = 0;
 
 typedef union {
 	int i;
@@ -95,7 +95,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;
+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky, iswork;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -127,6 +127,7 @@ struct Monitor {
 	unsigned int tagset[2];
 	int showbar;
 	int topbar;
+	int iswork;
 	Client *clients;
 	Client *sel;
 	Client *stack;
@@ -142,6 +143,7 @@ typedef struct {
 	unsigned int tags;
 	int isfloating;
 	int issticky;
+	int iswork;
 	int monitor;
 } Rule;
 
@@ -310,6 +312,7 @@ applyrules(Client *c)
 	/* rule matching */
 	c->isfloating = 0;
 	c->issticky = 0;
+	c->iswork = 0;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -323,6 +326,7 @@ applyrules(Client *c)
 		{
 			c->isfloating = r->isfloating;
 			c->issticky = r->issticky;
+			c->iswork = r->iswork;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
@@ -737,11 +741,11 @@ drawbar(Monitor *m)
 		return;
 
 	/* draw status first so it can be overdrawn by tags later */
-	if (m == selmon) { /* status is only drawn on selected monitor */
-		drw_setscheme(drw, scheme[SchemeNorm]);
-		tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
-		drw_text(drw, m->ww - tw, 0, tw, bh, 0, stext, 0);
-	}
+	//if (m == selmon) { /* status is only drawn on selected monitor */
+	drw_setscheme(drw, scheme[SchemeNorm]);
+	tw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
+	drw_text(drw, m->ww - tw, 0, tw, bh, 0, stext, 0);
+	//}
 
 	for (c = m->clients; c; c = c->next) {
 		occ |= c->tags;
@@ -1762,8 +1766,8 @@ tagmon(const Arg *arg)
 void
 toggleWorkMode(const Arg *arg)
 {
-    if(work) work = 0;
-	else work = 1;
+    if(selmon->iswork) selmon->iswork = 0;
+	else selmon->iswork = 1;
 
 	tile(selmon);
 }
@@ -1775,7 +1779,7 @@ tile(Monitor *m)
 	float mfacts = 0, sfacts = 0;
 	Client *c;
 
-	if(work && ((m->wh << 2) / 3) < m->ww)
+	if(m->iswork && ((m->wh << 2) / 3) < m->ww)
 	{
 		workmodeRatio = (m->wh << 2) / 3;
 		margin = (m->ww - workmodeRatio) >> 1;
