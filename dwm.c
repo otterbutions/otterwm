@@ -1323,7 +1323,7 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
 	wc.border_width = c->bw;
-	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next) && !work)
+	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
 	    || &monocle == c->mon->lt[c->mon->sellt]->arrange)
 	    && !c->isfullscreen && !c->isfloating
 	    && NULL != c->mon->lt[c->mon->sellt]->arrange) {
@@ -1765,17 +1765,21 @@ toggleWorkMode(const Arg *arg)
     if(work) work = 0;
 	else work = 1;
 
-
 	tile(selmon);
 }
 
 void
 tile(Monitor *m)
 {
-	unsigned int i, n, h, mw, my, ty, workmodeRatio = (m->wh * 4) / 3 ;
-	unsigned int margin = (m->ww - workmodeRatio) >> 1;
+	unsigned int i, n, h, mw, my, ty, workmodeRatio = m->ww, margin = 0;
 	float mfacts = 0, sfacts = 0;
 	Client *c;
+
+	if(work && ((m->wh << 2) / 3) < m->ww)
+	{
+		workmodeRatio = (m->wh << 2) / 3;
+		margin = (m->ww - workmodeRatio) >> 1;
+	}
 
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) {
 		if (n < m->nmaster)
@@ -1786,50 +1790,25 @@ tile(Monitor *m)
 	if (n == 0)
 		return;
 
-	if(workmodeRatio > m->ww) work = 0;
+	if (n > m->nmaster)
+		mw = m->nmaster ? workmodeRatio * m->mfact: 0;
+	else
+		mw = workmodeRatio;
+	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 
-	if(work)
+	if (i < m->nmaster)
 	{
-		if (n > m->nmaster)
-			mw = m->nmaster ? workmodeRatio * m->mfact: 0;
-		else
-			mw = workmodeRatio;
-		for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-			if (i < m->nmaster) {
-				h = (m->wh - my) * (c->cfact / mfacts);
-				resize(c, m->wx + margin, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
+		h = (m->wh - my) * (c->cfact / mfacts);
+		resize(c, m->wx + margin, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
 
-				if (my + HEIGHT(c) < m->wh)
-					my += HEIGHT(c);
-			} else {
-				h = (m->wh - ty) * (c->cfact / sfacts);
-				resize(c, m->wx + margin + mw, m->wy + ty, workmodeRatio - mw - (2*c->bw), h - (2*c->bw), 0);
-				if (ty + HEIGHT(c) < m->wh)
-					ty += HEIGHT(c);
-				sfacts -= c->cfact;
-			}
+		if (my + HEIGHT(c) < m->wh) my += HEIGHT(c);
 	}
 	else
 	{
-		if (n > m->nmaster)
-			mw = m->nmaster ? m -> ww * m->mfact: 0;
-		else
-			mw = m->ww;
-		for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-			if (i < m->nmaster) {
-				h = (m->wh - my) * (c->cfact / mfacts);
-				resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
-
-				if (my + HEIGHT(c) < m->wh)
-					my += HEIGHT(c);
-			} else {
-				h = (m->wh - ty) * (c->cfact / sfacts);
-				resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
-				
-				if (ty + HEIGHT(c) < m->wh)
-					ty += HEIGHT(c);
-				sfacts -= c->cfact;
-			}
+		h = (m->wh - ty) * (c->cfact / sfacts);
+		resize(c, m->wx + margin + mw, m->wy + ty, workmodeRatio - mw - (2*c->bw), h - (2*c->bw), 0);
+		if (ty + HEIGHT(c) < m->wh) ty += HEIGHT(c);
+		sfacts -= c->cfact;
 	}
 }
 
