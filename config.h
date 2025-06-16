@@ -60,10 +60,10 @@ static const char *screenshortcuts[] = { "screen-shortcuts", NULL };
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,            		XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,             		XK_a, spawn,          {.v = pcmanfm } },
-	{ MODKEY,            		XK_s,		spawn,          {.v = firefox } },
-	{ MODKEY|ShiftMask,            		XK_s,		togglesticky, {0} },
+	{ MODKEY,            			XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,             			XK_a, spawn,          {.v = pcmanfm } },
+	{ MODKEY,            			XK_s,		spawn,          {.v = firefox } },
+	{ MODKEY|ShiftMask,            	XK_s,		togglesticky, {0} },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -73,8 +73,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_j,      setcfact,       {.f = -0.25} },
 	{ MODKEY|ShiftMask,             XK_k,      setcfact,       {.f = +0.25} },
 	{ MODKEY|ShiftMask,             XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY,			XK_c,	zoom,		   {0} },
+	{ MODKEY,						XK_c,	zoom,		   {0} },
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
 	//{ MODKEY,                     XK_t,      setlayout,      {.v = &layouts[0]} },
 	//{ MODKEY,                     XK_f,      setlayout,      {.v = &layouts[1]} },
@@ -83,10 +82,6 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -96,22 +91,22 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
-	{ MODKEY|ControlMask,		XK_h,	spawn,	{.v = brightup}, },
-	{ MODKEY|ControlMask,		XK_l,	spawn,	{.v = brightdown}, },
-	{ MODKEY|ControlMask,		XK_k,	spawn,	{.v = volup}, },
-	{ MODKEY|ControlMask,		XK_j,	spawn,	{.v = voldown}, },
-	{ MODKEY|ControlMask,		XK_Up,	spawn,	{.v = brightup2}, },
-	{ MODKEY|ControlMask,		XK_Down,	spawn,	{.v = brightdown2}, },
-	{ MODKEY|ControlMask,		XK_Left,	spawn,	{.v = volup2}, },
-	{ MODKEY|ControlMask,		XK_Right,	spawn,	{.v = voldown2}, },
-	{ 0,		0x1008ff13,	spawn,	{.v = volup2}, },
-	{ 0,		0x1008ff11,	spawn,	{.v = voldown2}, },
-	{ ROTKEY|ControlMask,		XK_Prior,	spawn,	{.v = invertedscreen}, },
-	{ ROTKEY|ControlMask,		XK_Next,	spawn,	{.v = normalscreen}, },
-	{ ROTKEY|ControlMask,		XK_Home,	spawn,	{.v = leftscreen}, },
-	{ ROTKEY|ControlMask,		XK_End,	spawn,	{.v = screenshortcuts}, },
-	{ MODKEY|ControlMask,		XK_w,	toggleWorkMode, {0}, },
+	{ MODKEY|ControlMask,				XK_w,		toggleWorkMode, {0}, },
+	{ MODKEY|ShiftMask,             XK_e,	    quit,           {0} },
+	{ MODKEY|ControlMask,			XK_h,		spawn,			{.v = brightup}, },
+	{ MODKEY|ControlMask,			XK_l,		spawn,			{.v = brightdown}, },
+	{ MODKEY|ControlMask,			XK_k,		spawn,			{.v = volup}, },
+	{ MODKEY|ControlMask,			XK_j,		spawn,			{.v = voldown}, },
+	{ MODKEY|ControlMask,			XK_Up	,	spawn,			{.v = brightup2}, },
+	{ MODKEY|ControlMask,			XK_Down,	spawn,			{.v = brightdown2}, },
+	{ MODKEY|ControlMask,			XK_Left,	spawn,			{.v = volup2}, },
+	{ MODKEY|ControlMask,			XK_Right,	spawn,			{.v = voldown2}, },
+	{ 0,							0x1008ff13,	spawn,			{.v = volup2}, },
+	{ 0,							0x1008ff11,	spawn,			{.v = voldown2}, },
+	{ ROTKEY|ControlMask,			XK_Prior,	spawn,			{.v = invertedscreen}, },
+	{ ROTKEY|ControlMask,			XK_Next,	spawn,			{.v = normalscreen}, },
+	{ ROTKEY|ControlMask,			XK_Home,	spawn,			{.v = leftscreen}, },
+	{ ROTKEY|ControlMask,			XK_End,	spawn,	{.v = screenshortcuts}, },
 };
 
 /* button definitions */
