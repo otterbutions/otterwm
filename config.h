@@ -10,14 +10,11 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating	issticky   monitor */
-	{ NULL,     "xvkbd",       "xvkbd - Virtual Keyboard",      1 << 9,	1,            1,           -1 },
-	{ NULL,     "xcalc",       "Calculator",      0,	1,            0,           -1 },
-	{ NULL,     "xclock",       "xclock",      0,	1,            0,           -1 },
-	{ NULL,     "otter-panel",       "OtterPanel",      1 << 9,	1,            1,           -1 }
+	{ "XCalc",     "xcalc",       "Calculator",      0,	1,            0,           -1 }
 };
 
 /* layout(s) */
-static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
