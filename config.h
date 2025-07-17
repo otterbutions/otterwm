@@ -49,10 +49,9 @@ static const char *brightup2[] = { "backlight", "+", "10", NULL };
 static const char *brightdown2[] = { "backlight", "-","10",  NULL };
 static const char *volup2[] = { "mixer", "vol=+0.10", NULL };
 static const char *voldown2[] = { "mixer", "vol=-0.10",  NULL };
-static const char *invertedscreen[] = { "screen-rotation", "invert",  NULL };
-static const char *normalscreen[] = { "screen-rotation", "normal",  NULL };
-static const char *leftscreen[] = { "screen-rotation", "left",  NULL };
-static const char *screenshortcuts[] = { "screen-shortcuts", NULL };
+static const char *set_en[] = { "setxkbmap", "-layout", "us", NULL };
+static const char *set_ja[] = { "setxkbmap", "-layout", "jp", NULL };
+static const char *set_fr[] = { "setxkbmap", "-layout", "fr", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -100,10 +99,9 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,			XK_Right,	spawn,			{.v = voldown2}, },
 	{ 0,							0x1008ff13,	spawn,			{.v = volup2}, },
 	{ 0,							0x1008ff11,	spawn,			{.v = voldown2}, },
-	{ ROTKEY|ControlMask,			XK_Prior,	spawn,			{.v = invertedscreen}, },
-	{ ROTKEY|ControlMask,			XK_Next,	spawn,			{.v = normalscreen}, },
-	{ ROTKEY|ControlMask,			XK_Home,	spawn,			{.v = leftscreen}, },
-	{ ROTKEY|ControlMask,			XK_End,	spawn,	{.v = screenshortcuts}, },
+  	{ MODKEY|ControlMask,           XK_a,       spawn,          {.v = set_en}, },
+  	{ MODKEY|ControlMask,           XK_s,       spawn,          {.v = set_ja}, },
+   	{ MODKEY|ControlMask,           XK_d,       spawn,          {.v = set_fr}, },
 };
 
 /* button definitions */
