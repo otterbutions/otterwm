@@ -32,39 +32,32 @@ static const Layout layouts[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SET_LANG(lang) { .v = (const char*[]){ "setxkbmap", "-layout", lang, NULL } }
+#define VOL(mod_vol) { .v = (const char*[]){ "mixer", mod_vol, NULL } }
+#define BRIGHT(mod_bri, amount) { .v = (const char*[]){ "backlight", mod_bri, amount, NULL } }
+#define POWER { .v = (const char*[]){ "doas", "poweroff", NULL } }
+#define RESET { .v = (const char*[]){ "doas", "shutdown", "-r", "now", NULL } }
 
-/* commands */
+#define TERM { .v = (const char*[]){ "st", NULL } }
+#define WWW { .v = (const char*[]){ "firefox", NULL } }
+#define FILE { .v = (const char*[]){ "pcmanfm", NULL } }
+
+/* dmenu */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", gray2, "-nf", gray3, "-sb", selected, "-sf", gray1, NULL };
-static const char *termcmd[]  = { "st", NULL };
-static const char *pcmanfm[] = { "pcmanfm", NULL };
-static const char *firefox[] = { "firefox", NULL };
-static const char *brightup[] = { "backlight", "+", "2", NULL };
-static const char *brightdown[] = { "backlight", "-","2",  NULL };
-static const char *volup[] = { "mixer", "vol=+0.05", NULL };
-static const char *voldown[] = { "mixer", "vol=-0.05",  NULL };
-static const char *brightup2[] = { "backlight", "+", "10", NULL };
-static const char *brightdown2[] = { "backlight", "-","10",  NULL };
-static const char *volup2[] = { "mixer", "vol=+0.10", NULL };
-static const char *voldown2[] = { "mixer", "vol=-0.10",  NULL };
-static const char *set_en[] = { "setxkbmap", "-layout", "us", NULL };
-static const char *set_ja[] = { "setxkbmap", "-layout", "jp", NULL };
-static const char *set_fr[] = { "setxkbmap", "-layout", "fr", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,            			XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,             			XK_a, spawn,          {.v = pcmanfm } },
-	{ MODKEY,            			XK_s,		spawn,          {.v = firefox } },
-	{ MODKEY|ShiftMask,            	XK_s,		togglesticky, {0} },
+	{ MODKEY,            						XK_Return, spawn,          TERM },
+	{ MODKEY,             					XK_a,			 spawn,          FILE },
+	{ MODKEY,            						XK_s,			 spawn,          WWW },
+	{ MODKEY|ShiftMask,            	XK_s,			 togglesticky, 	 {0} },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_q,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_w,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_w,      incnmaster,     {.i = 0 } },
 	{ MODKEY|ShiftMask,             XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      setcfact,       {.f = -0.25} },
 	{ MODKEY|ShiftMask,             XK_k,      setcfact,       {.f = +0.25} },
@@ -78,30 +71,28 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	TAGKEYS(                        XK_1,                      0)
-	TAGKEYS(                        XK_2,                      1)
-	TAGKEYS(                        XK_3,                      2)
-	TAGKEYS(                        XK_4,                      3)
-	TAGKEYS(                        XK_5,                      4)
-	TAGKEYS(                        XK_6,                      5)
-	TAGKEYS(                        XK_7,                      6)
-	TAGKEYS(                        XK_8,                      7)
-	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ControlMask,				XK_w,		toggleWorkMode, {0}, },
-	{ MODKEY|ShiftMask,             XK_e,	    quit,           {0} },
-	{ MODKEY|ControlMask,			XK_h,		spawn,			{.v = brightup}, },
-	{ MODKEY|ControlMask,			XK_l,		spawn,			{.v = brightdown}, },
-	{ MODKEY|ControlMask,			XK_k,		spawn,			{.v = volup}, },
-	{ MODKEY|ControlMask,			XK_j,		spawn,			{.v = voldown}, },
-	{ MODKEY|ControlMask,			XK_Up	,	spawn,			{.v = brightup2}, },
-	{ MODKEY|ControlMask,			XK_Down,	spawn,			{.v = brightdown2}, },
-	{ MODKEY|ControlMask,			XK_Left,	spawn,			{.v = volup2}, },
-	{ MODKEY|ControlMask,			XK_Right,	spawn,			{.v = voldown2}, },
-	{ 0,							0x1008ff13,	spawn,			{.v = volup2}, },
-	{ 0,							0x1008ff11,	spawn,			{.v = voldown2}, },
-  	{ MODKEY|ControlMask,           XK_a,       spawn,          {.v = set_en}, },
-  	{ MODKEY|ControlMask,           XK_s,       spawn,          {.v = set_ja}, },
-   	{ MODKEY|ControlMask,           XK_d,       spawn,          {.v = set_fr}, },
+	TAGKEYS(                        XK_1,      0)
+	TAGKEYS(                        XK_2,      1)
+	TAGKEYS(                        XK_3,      2)
+	TAGKEYS(                        XK_4,      3)
+	TAGKEYS(                        XK_5,      4)
+	TAGKEYS(                        XK_6,      5)
+	TAGKEYS(                        XK_7,      6)
+	TAGKEYS(                        XK_8,      7)
+	TAGKEYS(                        XK_9,      8)
+	{ MODKEY|ControlMask,						XK_w,			 toggleWorkMode, {0}, },
+	{ MODKEY|ShiftMask,             XK_e,	     quit,           {0} },
+	{ MODKEY|ControlMask,						XK_h,	 		 spawn,					 BRIGHT("+", "5") },
+	{ MODKEY|ControlMask,						XK_l,			 spawn,					 BRIGHT("-", "5") },
+	{ MODKEY|ControlMask,						XK_k,			 spawn,					 VOL("vol=+0.05") },
+	{ MODKEY|ControlMask,						XK_j,			 spawn,					 VOL("vol=-0.05") },
+	{ MODKEY|ControlMask,						XK_s,			 spawn,					 SET_LANG("us") },
+	{ MODKEY|ControlMask,						XK_d,			 spawn,					 SET_LANG("jp") },
+	{ MODKEY|ControlMask,						XK_f,			 spawn,					 SET_LANG("fr") },
+	{ 0,											0x1008ff13,			 spawn,					 VOL("vol=+0.10") },
+	{ 0,											0x1008ff11,			 spawn,					 VOL("vol=-0.10") },
+	{ 0,											0x1008ff2a,			 spawn,					 POWER },
+	{ ControlMask,											0x1008ff2a,			 spawn,					 RESET },
 };
 
 /* button definitions */
@@ -111,7 +102,6 @@ static const Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
