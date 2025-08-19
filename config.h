@@ -88,7 +88,6 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,						XK_j,			 spawn,					 VOL("vol=-0.05") },
 	{ MODKEY|ControlMask,						XK_s,			 spawn,					 SET_LANG("us") },
 	{ MODKEY|ControlMask,						XK_d,			 spawn,					 SET_LANG("jp") },
-	{ MODKEY|ControlMask,						XK_f,			 spawn,					 SET_LANG("fr") },
 	{ 0,											0x1008ff13,			 spawn,					 VOL("vol=+0.10") },
 	{ 0,											0x1008ff11,			 spawn,					 VOL("vol=-0.10") },
 	{ 0,											0x1008ff2a,			 spawn,					 POWER },
